@@ -4,11 +4,9 @@ from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.utils import to_categorical
-from PIL import Image
-import numpy as np
 
 # Title of the app
-st.title("Train a Neural Network on MNIST and Test with an Uploaded Image")
+st.title("Train a Neural Network on MNIST")
 
 # Load the MNIST data
 st.write("Loading the MNIST dataset...")
@@ -39,44 +37,19 @@ model = create_model()
 
 # Train the model
 if st.button("Train Model"):
-    try:
-        st.write("Training the model...")
-        history = model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test), verbose=2)
-        
-        # Display the training accuracy
-        st.write("Training Accuracy:", history.history['accuracy'][-1])
-        st.write("Validation Accuracy:", history.history['val_accuracy'][-1])
-        
-        # Display the loss
-        st.write("Training Loss:", history.history['loss'][-1])
-        st.write("Validation Loss:", history.history['val_loss'][-1])
-    except Exception as e:
-        st.error(f"Error during training: {e}")
+    st.write("Training the model...")
+    history = model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test), verbose=2)
+    
+    # Display the training accuracy
+    st.write("Training Accuracy:", history.history['accuracy'][-1])
+    st.write("Validation Accuracy:", history.history['val_accuracy'][-1])
+    
+    # Display the loss
+    st.write("Training Loss:", history.history['loss'][-1])
+    st.write("Validation Loss:", history.history['val_loss'][-1])
 
 # Evaluate the model on test data
 if st.button("Evaluate Model"):
-    try:
-        loss, accuracy = model.evaluate(x_test, y_test, verbose=2)
-        st.write(f"Test Accuracy: {accuracy}")
-        st.write(f"Test Loss: {loss}")
-    except Exception as e:
-        st.error(f"Error during evaluation: {e}")
-
-# Upload an image to check against the trained model
-uploaded_file = st.file_uploader("Choose an image...", type="png")
-
-if uploaded_file is not None:
-    try:
-        # Open the image file
-        image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
-        image = image.resize((28, 28))  # Resize to 28x28
-        image = np.array(image) / 255.0  # Normalize the image
-        st.image(image, caption='Uploaded Image', use_column_width=True)
-        image = np.expand_dims(image, axis=0)  # Add batch dimension
-
-        # Predict the class of the image
-        prediction = model.predict(image)
-        predicted_class = np.argmax(prediction, axis=1)
-        st.write(f"Predicted Class: {predicted_class[0]}")
-    except Exception as e:
-        st.error(f"Error during prediction: {e}")
+    loss, accuracy = model.evaluate(x_test, y_test, verbose=2)
+    st.write(f"Test Accuracy: {accuracy}")
+    st.write(f"Test Loss: {loss}")
