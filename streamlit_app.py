@@ -39,35 +39,44 @@ model = create_model()
 
 # Train the model
 if st.button("Train Model"):
-    st.write("Training the model...")
-    history = model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test), verbose=2)
-    
-    # Display the training accuracy
-    st.write("Training Accuracy:", history.history['accuracy'][-1])
-    st.write("Validation Accuracy:", history.history['val_accuracy'][-1])
-    
-    # Display the loss
-    st.write("Training Loss:", history.history['loss'][-1])
-    st.write("Validation Loss:", history.history['val_loss'][-1])
+    try:
+        st.write("Training the model...")
+        history = model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test), verbose=2)
+        
+        # Display the training accuracy
+        st.write("Training Accuracy:", history.history['accuracy'][-1])
+        st.write("Validation Accuracy:", history.history['val_accuracy'][-1])
+        
+        # Display the loss
+        st.write("Training Loss:", history.history['loss'][-1])
+        st.write("Validation Loss:", history.history['val_loss'][-1])
+    except Exception as e:
+        st.error(f"Error during training: {e}")
 
 # Evaluate the model on test data
 if st.button("Evaluate Model"):
-    loss, accuracy = model.evaluate(x_test, y_test, verbose=2)
-    st.write(f"Test Accuracy: {accuracy}")
-    st.write(f"Test Loss: {loss}")
+    try:
+        loss, accuracy = model.evaluate(x_test, y_test, verbose=2)
+        st.write(f"Test Accuracy: {accuracy}")
+        st.write(f"Test Loss: {loss}")
+    except Exception as e:
+        st.error(f"Error during evaluation: {e}")
 
 # Upload an image to check against the trained model
 uploaded_file = st.file_uploader("Choose an image...", type="png")
 
 if uploaded_file is not None:
-    # Open the image file
-    image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
-    image = image.resize((28, 28))  # Resize to 28x28
-    image = np.array(image) / 255.0  # Normalize the image
-    st.image(image, caption='Uploaded Image', use_column_width=True)
-    image = np.expand_dims(image, axis=0)  # Add batch dimension
+    try:
+        # Open the image file
+        image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
+        image = image.resize((28, 28))  # Resize to 28x28
+        image = np.array(image) / 255.0  # Normalize the image
+        st.image(image, caption='Uploaded Image', use_column_width=True)
+        image = np.expand_dims(image, axis=0)  # Add batch dimension
 
-    # Predict the class of the image
-    prediction = model.predict(image)
-    predicted_class = np.argmax(prediction, axis=1)
-    st.write(f"Predicted Class: {predicted_class[0]}")
+        # Predict the class of the image
+        prediction = model.predict(image)
+        predicted_class = np.argmax(prediction, axis=1)
+        st.write(f"Predicted Class: {predicted_class[0]}")
+    except Exception as e:
+        st.error(f"Error during prediction: {e}")
