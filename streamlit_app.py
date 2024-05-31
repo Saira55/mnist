@@ -1,7 +1,7 @@
 import numpy as np
 from tensorflow.keras.datasets import mnist
 
-# Download MNIST data
+# Load MNIST data
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # Save the data locally
@@ -10,6 +10,7 @@ np.save('y_train.npy', y_train)
 np.save('x_test.npy', x_test)
 np.save('y_test.npy', y_test)
 
+print("MNIST data has been saved locally.")
 
 import streamlit as st
 import numpy as np
