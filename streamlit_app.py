@@ -1,6 +1,19 @@
-import streamlit as st
-import tensorflow as tf
+import numpy as np
 from tensorflow.keras.datasets import mnist
+
+# Download MNIST data
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Save the data locally
+np.save('x_train.npy', x_train)
+np.save('y_train.npy', y_train)
+np.save('x_test.npy', x_test)
+np.save('y_test.npy', y_test)
+
+
+import streamlit as st
+import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.utils import to_categorical
@@ -8,9 +21,12 @@ from tensorflow.keras.utils import to_categorical
 # Title of the app
 st.title("Train a Neural Network on MNIST")
 
-# Load the MNIST data
+# Load the MNIST data from local files
 st.write("Loading the MNIST dataset...")
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train = np.load('x_train.npy')
+y_train = np.load('y_train.npy')
+x_test = np.load('x_test.npy')
+y_test = np.load('y_test.npy')
 
 # Normalize the images
 x_train = x_train / 255.0
