@@ -4,9 +4,11 @@ from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.utils import to_categorical
+from PIL import Image
+import numpy as np
 
 # Title of the app
-st.title("Train a Neural Network on MNIST")
+st.title("Train a Neural Network on MNIST and Test with an Uploaded Image")
 
 # Load the MNIST data
 st.write("Loading the MNIST dataset...")
@@ -53,3 +55,19 @@ if st.button("Evaluate Model"):
     loss, accuracy = model.evaluate(x_test, y_test, verbose=2)
     st.write(f"Test Accuracy: {accuracy}")
     st.write(f"Test Loss: {loss}")
+
+# Upload an image to check against the trained model
+uploaded_file = st.file_uploader("Choose an image...", type="png")
+
+if uploaded_file is not None:
+    # Open the image file
+    image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
+    image = image.resize((28, 28))  # Resize to 28x28
+    image = np.array(image) / 255.0  # Normalize the image
+    st.image(image, caption='Uploaded Image', use_column_width=True)
+    image = np.expand_dims(image, axis=0)  # Add batch dimension
+
+    # Predict the class of the image
+    prediction = model.predict(image)
+    predicted_class = np.argmax(prediction, axis=1)
+    st.write(f"Predicted Class: {predicted_class[0]}")
